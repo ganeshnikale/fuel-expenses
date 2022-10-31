@@ -13,9 +13,7 @@ function App() {
 
  
   const CalculateExp = async (e) => {
-
     if (e && e.preventDefault) { e.preventDefault(); }
-    
     let requiredFuel =  (fuleExp.roundTrip) ? distance*2/fuleExp.expAvg : distance/fuleExp.expAvg;
     let fuelCost =  requiredFuel*fuleExp.avgFuelCost;
         setFuelExp(  (preState) => {
@@ -100,7 +98,6 @@ function App() {
   console.log(loading);
 
   useEffect(() => {
-    CalculateExp();
     
 
     return () => {
@@ -120,7 +117,7 @@ function App() {
 
         {fuleExp.destiation}
 
-        {loading && <div className="spinner-border" role="status">
+        {loading && error && <div className="spinner-border" role="status">
   <span className="visually-hidden">Loading...</span>
 </div>}
         
