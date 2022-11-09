@@ -15,7 +15,6 @@ function App() {
   const [prediction, predictionLoading, predictionError] =  useLocation(fuleExp.origin);
   let [predictionDestiation, predictionDestiationLoading, predictionDestiationError] =  useLocation(fuleExp.destiation);
 
-
  
   const CalculateExp = async (e) => {
     if (e && e.preventDefault) { e.preventDefault(); }
@@ -107,7 +106,7 @@ function App() {
     setFuelExp( (preState)=> {return {
       ...preState,
       origin: pOrigin,
-      
+      originPrediction: []
     }});
   }
 
@@ -115,6 +114,7 @@ function App() {
     setFuelExp( (preState)=> {return {
       ...preState,
       destiation: pDestination,
+      destiationPrediction: []
       
     }});
   }
@@ -136,8 +136,6 @@ console.log(predictionLoading);
             <h2 className='display-4 mb-5'>Get fuel Expenses for your trip</h2>
           </div>
         </div>
-
-        {fuleExp.destiation}
 
         {loading && error && <div className="spinner-border" role="status">
   <span className="visually-hidden">Loading...</span>
@@ -171,17 +169,20 @@ console.log(predictionLoading);
                   <div className="">
                     <input type="text" name="originLocation" value={fuleExp.origin} onChange={originChangeHandler}/>
                   </div>
-                <div>
-                  <ul>
+                </div>
+                <ul className='list-group col-md-8'>
                     {!predictionLoading &&
                       fuleExp.originPrediction.map( (x) => {
-                       return <li onClick={() => setOriginfromPrediction(x.description)}>{x.description }</li>
+                       return <li 
+                       
+                       className={`list-group-item ${fuleExp.origin == x.description && 'active'}`}
+                       onClick={() => setOriginfromPrediction(x.description)}>
+                        {x.description }
+                        </li>
                       })
                       }
                     
                   </ul>
-                </div>
-                </div>
               </div>
             </div>
 
@@ -193,16 +194,18 @@ console.log(predictionLoading);
                 <div className='col-auto'>
                 <input type="text" name="destinationLocation" value={fuleExp.destiation} onChange={destiationChangeHandler}/>
                 </div>
-                <div>
-                  <ul>
+                  <ul className='list-group col-md-8'>
                     {!predictionDestiationLoading &&
                       fuleExp.destiationPrediction.map( (x) => {
-                       return <li onClick={() => setDestiationfromPrediction(x.description)}>{x.description }</li>
+                       return <li 
+                       className={`list-group-item ${fuleExp.destiation == x.description && 'active'}`}
+                       onClick={() => setDestiationfromPrediction(x.description)}>
+                        {x.description }</li>
                       })
                       }
                     
                   </ul>
-                </div>
+                
               </div>
             </div>
 
