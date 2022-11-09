@@ -1,15 +1,20 @@
 import { useState, useEffect} from 'react';
 import './App.css';
 import useSimple from './hooks/useSimple';
+import useLocation from './hooks/use-location';
 
 
 function App() {
 
-  const fuelExpEst = {estDistance: 0, expAvg:0, avgFuelCost:0, origin:'', destiation:'', requiredFuel: 0, roundTrip: false,fuelCost:0};
+  const fuelExpEst = {estDistance: 0, expAvg:0, avgFuelCost:0, originPrediction: [], origin:'', destiationPrediction:[], destiation:'', requiredFuel: 0, roundTrip: false,fuelCost:0};
 
   const [fuleExp, setFuelExp] = useState(fuelExpEst);
 
   const {distance, loading, error} =  useSimple(fuleExp.origin, fuleExp.destiation);
+
+  const [prediction, predictionLoading, predictionError] =  useLocation(fuleExp.origin);
+  let [predictionDestiation, predictionDestiationLoading, predictionDestiationError] =  useLocation(fuleExp.destiation);
+
 
  
   const CalculateExp = async (e) => {
@@ -62,13 +67,16 @@ function App() {
     setFuelExp( (preState)=> {return {
       ...preState,
       origin: e.target.value,
+      originPrediction:prediction.predictions
     }});
   }
 
   let destiationChangeHandler = (e) => {
+    
     setFuelExp( (preState)=> {return {
       ...preState,
       destiation: e.target.value,
+      destiationPrediction:predictionDestiation.predictions
     }});
   }
 
@@ -95,7 +103,21 @@ function App() {
      
   }
 
-  console.log(loading);
+  let setOriginfromPrediction = (pOrigin) => {
+    setFuelExp( (preState)=> {return {
+      ...preState,
+      origin: pOrigin,
+      
+    }});
+  }
+
+ let setDestiationfromPrediction = (pDestination) => {
+    setFuelExp( (preState)=> {return {
+      ...preState,
+      destiation: pDestination,
+      
+    }});
+  }
 
   useEffect(() => {
     
@@ -104,7 +126,7 @@ function App() {
 
     }
   }, [fuleExp.roundTrip])
-
+console.log(predictionLoading);
 
   return (
     <div className="App">
@@ -149,6 +171,16 @@ function App() {
                   <div className="">
                     <input type="text" name="originLocation" value={fuleExp.origin} onChange={originChangeHandler}/>
                   </div>
+                <div>
+                  <ul>
+                    {!predictionLoading &&
+                      fuleExp.originPrediction.map( (x) => {
+                       return <li onClick={() => setOriginfromPrediction(x.description)}>{x.description }</li>
+                      })
+                      }
+                    
+                  </ul>
+                </div>
                 </div>
               </div>
             </div>
@@ -160,6 +192,16 @@ function App() {
                 </div>
                 <div className='col-auto'>
                 <input type="text" name="destinationLocation" value={fuleExp.destiation} onChange={destiationChangeHandler}/>
+                </div>
+                <div>
+                  <ul>
+                    {!predictionDestiationLoading &&
+                      fuleExp.destiationPrediction.map( (x) => {
+                       return <li onClick={() => setDestiationfromPrediction(x.description)}>{x.description }</li>
+                      })
+                      }
+                    
+                  </ul>
                 </div>
               </div>
             </div>
